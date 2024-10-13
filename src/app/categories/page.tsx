@@ -12,7 +12,7 @@ interface Project {
 interface Category {
   _id: string;
   name: string;
-  projectId: mongoose.Schema.Types.ObjectId;
+  projectId: Project;
   subcategories?: Subcategory[];
 }
 

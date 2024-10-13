@@ -18,14 +18,12 @@ import ExpenditureDashboard from "../../components/ExpenditureDashboard";
 import styles from "@/app/page.module.css";
 
 export interface Expenditure {
-  _id: string;
-  projectId: {
-    _id: string;
-    name: string;
-  };
+  _id?: string;
+  projectId: string;
   categoryId: {
     _id: string;
     name: string;
+    subCategories: { _id: string; name: string }[];
   };
   subCategoryId: {
     _id: string;
@@ -36,6 +34,11 @@ export interface Expenditure {
   description: string;
 }
 
+interface DeleteConfirmationModalProps {
+  show: boolean;
+  handleClose: () => void;
+  handleConfirm: () => void;
+}
 export default function Expenditures() {
   const [expenditures, setExpenditures] = useState<Expenditure[]>([]);
   const [showAddModal, setShowAddModal] = useState(false);
@@ -81,7 +84,7 @@ export default function Expenditures() {
     fetchExpenditures(pageNumber);
   };
 
-  const handleAddExpenditure = (newExpenditure: Omit<Expenditure, "_id">) => {
+  const handleAddExpenditure = (newExpenditure: Omit<Expenditure, "_id">[]) => {
     fetch("/api/expenditures", {
       method: "POST",
       headers: {
@@ -190,7 +193,11 @@ export default function Expenditures() {
     }
   }, [notification]);
 
-  const DeleteConfirmationModal = ({ show, handleClose, handleConfirm }) => (
+  const DeleteConfirmationModal: React.FC<DeleteConfirmationModalProps> = ({
+    show,
+    handleClose,
+    handleConfirm,
+  }) => (
     <Modal show={show} onHide={handleClose}>
       <Modal.Header closeButton>
         <Modal.Title>Confirm Deletion</Modal.Title>
