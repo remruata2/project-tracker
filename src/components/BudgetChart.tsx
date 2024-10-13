@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import {
   PieChart,
   Pie,
@@ -19,7 +19,7 @@ interface Category {
 }
 
 interface BudgetPieChartProps {
-  projectId: string;
+  categories: Category[];
 }
 
 const COLORS = [
@@ -42,47 +42,28 @@ const COLORS = [
   "#607D8B", // Blue Grey
 ];
 
-const BudgetPieChart: React.FC<BudgetPieChartProps> = ({ projectId }) => {
-  const [categories, setCategories] = useState<Category[]>([]);
-
-  useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const response = await fetch(`/api/categories?projectId=${projectId}`);
-        if (response.ok) {
-          const data = await response.json();
-          setCategories(data);
-        } else {
-          throw new Error("Failed to fetch categories");
-        }
-      } catch (error) {
-        console.error("Error fetching categories:", error);
-      }
-    };
-
-    fetchCategories();
-  }, [projectId]);
-
+const BudgetPieChart: React.FC<BudgetPieChartProps> = ({ categories }) => {
   const data = categories.map((category) => ({
     name: category.name,
     value: category.subcategories.reduce((sum, sub) => sum + sub.amount, 0),
   }));
 
   return (
-    <ResponsiveContainer width="100%" height={400}>
-      <PieChart>
+    <ResponsiveContainer width="100%" aspect={1}>
+      <PieChart width={400} height={400}>
         <Pie
           data={data}
           cx="50%"
           cy="50%"
           labelLine={false}
-          innerRadius={100}
-          outerRadius={150}
+          innerRadius="30%"
+          outerRadius="60%"
           fill="#8884d8"
           dataKey="value"
-          label={({ name, percent }) =>
-            `${name} ${(percent * 100).toFixed(0)}%`
-          }
+          label={({ name, percent }) => {
+            const percentValue = (percent * 100).toFixed(0);
+            return percentValue > 5 ? `${name} ${percentValue}%` : "";
+          }}
         >
           {data.map((entry, index) => (
             <Cell
@@ -94,7 +75,12 @@ const BudgetPieChart: React.FC<BudgetPieChartProps> = ({ projectId }) => {
           ))}
         </Pie>
         <Tooltip formatter={(value) => `Rs.${value.toFixed(2)}`} />
-        <Legend wrapperStyle={{ top: "400px" }} />
+        <Legend
+          layout="horizontal"
+          verticalAlign="bottom"
+          align="center"
+          wrapperStyle={{ fontSize: "12px", marginTop: "10px" }}
+        />
       </PieChart>
     </ResponsiveContainer>
   );

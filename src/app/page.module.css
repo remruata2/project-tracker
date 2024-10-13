@@ -83,8 +83,24 @@
 .chartContainer {
   height: 100%;
   width: 100%;
-  max-width: 800px;
+  max-width: 700px;
   margin: 20px auto;
   text-align: center;
   padding: 20px;
+}
+
+.projectListTable {
+  width: 100%;
+  max-width: 800px;
+}
+
+.nav-tabs .nav-link.active {
+  font-weight: bold;
+  color: #007bff;
+  border-bottom: 3px solid #007bff;
+  background-color: black;
+}
+
+.nav-tabs .nav-link:hover {
+  border-color: transparent;
 }

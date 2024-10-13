@@ -1,0 +1,25 @@
+.navLink {
+  color: white !important;
+  transition: all 0.3s ease;
+}
+
+.navLink:hover {
+  color: #f8f9fa !important; /* Light gray color on hover */
+  transform: translateY(-2px);
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
+.primaryOffcanvas :global(.btn-close) {
+  filter: invert(1) grayscale(100%) brightness(200%);
+}
+
+.primaryOffcanvas :global(.offcanvas-title) {
+  color: white;
+}
+
+.primaryOffcanvas :global(.nav-link) {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.primaryOffcanvas :global(.nav-link:hover) {
+  color: white;
+}

@@ -1,45 +1,67 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo, useCallback } from "react";
 import styles from "@/app/page.module.css";
-import { Table, Button, Form, Modal, Tab, Tabs } from "react-bootstrap";
+import { Form, Tab, Tabs, Row, Col, Button } from "react-bootstrap";
 import BudgetPieChart from "@/components/BudgetChart";
 import BudgetTable from "@/components/BudgetTable";
+import Link from "next/link";
+import { useSearchParams } from "next/navigation";
+import BudgetDashboard from "@/components/BudgetDashboard";
+import ExpenditureDashboard from "@/components/ExpenditureDashboard";
+import BudgetVsExpenditureChart from "@/components/BudgetVsExpenditure";
+import "@/app/custom-tabs.css";
 
-import mongoose from "mongoose";
-
-interface Project {
+export interface Project {
   _id: string;
   name: string;
 }
 
-interface Category {
+export interface Category {
   _id: string;
   name: string;
-  projectId: mongoose.Schema.Types.ObjectId;
-  subcategories?: Subcategory[];
+  subcategories: Subcategory[];
+  projectId: Project;
 }
 
-interface Subcategory {
+export interface Subcategory {
   _id: string;
   name: string;
   amount: number;
-  parentCategoryId: string;
+}
+
+export interface Expenditure {
+  _id: string;
+  projectId: {
+    _id: string;
+    name: string;
+  };
+  categoryId: {
+    _id: string;
+    name: string;
+  };
+  subCategoryId: {
+    _id: string;
+    name: string;
+  };
+  amount: number;
+  date: string;
+  description: string;
 }
 
 export default function Home() {
   const [projects, setProjects] = useState<Project[]>([]);
+  const [selectedProject, setSelectedProject] = useState<string>("");
+  const [activeTab, setActiveTab] = useState<string>("dashboard");
+  const searchParams = useSearchParams();
+  const projectId = searchParams.get("projectId");
+  const [expenditures, setExpenditures] = useState<Expenditure[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
-  const [projectName, setProjectName] = useState("");
-  const [editingProject, setEditingProject] = useState<Project | null>(null);
-  const [showEditModal, setShowEditModal] = useState(false);
-  const [selectedProjectId, setSelectedProjectId] = useState<string | null>(
-    null
-  );
-
-  useEffect(() => {
-    fetchProjects();
-  }, []);
+  const MemoizedBudgetDashboard = React.memo(BudgetDashboard);
+  const MemoizedBudgetPieChart = React.memo(BudgetPieChart);
+  const MemoizedExpenditureDashboard = React.memo(ExpenditureDashboard);
+  const MemoizedBudgetVsExpenditureChart = React.memo(BudgetVsExpenditureChart);
+  const MemoizedBudgetTable = React.memo(BudgetTable);
 
   const fetchProjects = async () => {
     try {
@@ -55,9 +77,26 @@ export default function Home() {
     }
   };
 
-  const fetchCategories = async (projectId: string) => {
+  const fetchExpenditures = async (projectId: string) => {
     try {
-      const response = await fetch(`/api/categories?projectId=${projectId}`);
+      const response = await fetch(
+        `/api/expenditures?all=true&projectId=${projectId}`
+      );
+      if (response.ok) {
+        const data = await response.json();
+        setExpenditures(data.expenditures); // Assuming the API returns an object with an 'expenditures' array
+      } else {
+        throw new Error("Failed to fetch expenditures");
+      }
+    } catch (error) {
+      console.error("Error fetching expenditures:", error);
+      setExpenditures([]); // Set to empty array in case of error
+    }
+  };
+
+  const fetchCategories = async () => {
+    try {
+      const response = await fetch("/api/categories");
       if (response.ok) {
         const data = await response.json();
         setCategories(data);
@@ -69,193 +108,136 @@ export default function Home() {
     }
   };
 
-  const addProject = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (projectName.trim() === "") return;
-    try {
-      const response = await fetch("/api/projects", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name: projectName }),
-      });
-      if (response.ok) {
-        const newProject = await response.json();
-        setProjects([...projects, newProject]);
-        setProjectName("");
-      } else {
-        throw new Error("Failed to add project");
-      }
-    } catch (error) {
-      console.error("Error adding project:", error);
-    }
-  };
+  useEffect(() => {
+    fetchProjects();
+    fetchCategories();
+  }, []);
 
-  const deleteProject = async (id: string) => {
-    if (window.confirm("Are you sure you want to delete this project?")) {
-      try {
-        const response = await fetch(`/api/projects/${id}`, {
-          method: "DELETE",
-        });
-        if (response.ok) {
-          setProjects(projects.filter((project) => project._id !== id));
-        } else {
-          throw new Error("Failed to delete project");
-        }
-      } catch (error) {
-        console.error("Error deleting project:", error);
-      }
+  useEffect(() => {
+    if (projectId) {
+      setSelectedProject(projectId);
+      fetchExpenditures(projectId);
     }
-  };
+  }, [projectId]);
 
-  const updateProject = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (!editingProject) return;
-    try {
-      const response = await fetch(`/api/projects/${editingProject._id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name: editingProject.name }),
-      });
-      if (response.ok) {
-        const updatedProject = await response.json();
-        setProjects(
-          projects.map((p) =>
-            p._id === updatedProject._id ? updatedProject : p
-          )
+  const handleProjectSelect = useCallback((projectId: string) => {
+    setSelectedProject(projectId);
+    fetchExpenditures(projectId);
+  }, []);
+
+  const prepareChartData = () => {
+    if (!selectedProject) {
+      console.log("No project selected");
+      return [];
+    }
+
+    const categoryMap = new Map();
+
+    // First, find all categories associated with the selected project and calculate their budgets
+    categories.forEach((category) => {
+      if (category.projectId._id === selectedProject) {
+        const categoryBudget = category.subcategories.reduce(
+          (total, sub) => total + sub.amount,
+          0
         );
-        setShowEditModal(false);
-      } else {
-        throw new Error("Failed to update project");
+        categoryMap.set(category._id, {
+          name: category.name, // Store the name for later use
+          budget: categoryBudget,
+          expenditure: 0,
+        });
       }
-    } catch (error) {
-      console.error("Error updating project:", error);
-    }
+    });
+
+    // Then, calculate expenditure for each category
+    expenditures.forEach((item) => {
+      if (categoryMap.has(item.categoryId._id)) {
+        categoryMap.get(item.categoryId._id).expenditure += item.amount;
+      } else {
+        console.log("Category not found:", item.categoryId.name);
+      }
+    });
+
+    const chartData = Array.from(categoryMap, ([id, values]) => ({
+      name: values.name,
+      budget: values.budget,
+      expenditure: values.expenditure,
+    }));
+
+    return chartData;
   };
+
+  useEffect(() => {
+    if (selectedProject) {
+      console.log("Calling prepareChartData");
+      const chartData = prepareChartData();
+      console.log("Chart Data from useEffect:", chartData);
+    }
+  }, [selectedProject, projects, expenditures]);
 
   return (
     <div className={styles.container}>
-      <main className={styles.main}>
-        <h1 className={styles.title}>Project Budget Tracker</h1>
-        <Form onSubmit={addProject} className={styles.form}>
-          <Form.Group className="mb-3">
-            <Form.Control
-              type="text"
-              value={projectName}
-              onChange={(e) => setProjectName(e.target.value)}
-              placeholder="Enter Project Name"
-              required
-            />
-          </Form.Group>
-          <Button variant="primary mb-3" type="submit">
-            Add Project
-          </Button>
-        </Form>
-
-        <h2>Project List</h2>
-        {projects.length > 0 ? (
-          <Table
-            responsive
-            striped
-            bordered
-            hover
-            variant="dark"
-            style={{ width: "800px", maxWidth: "800px" }}
-          >
-            <thead>
-              <tr>
-                <th>Project Name</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
+      <h1>Project Budget Tracker</h1>
+      <div className="mb-4">
+        <Row>
+          <Col>
+            <Form.Select
+              aria-label="Select Project"
+              value={selectedProject}
+              onChange={(e) => handleProjectSelect(e.target.value)}
+              className="float-start"
+            >
+              <option value="">Select a project</option>
               {projects.map((project) => (
-                <tr key={project._id}>
-                  <td>{project.name}</td>
-                  <td>
-                    <Button
-                      variant="primary"
-                      size="sm"
-                      className="me-2"
-                      onClick={() => setSelectedProjectId(project._id)}
-                    >
-                      View Details
-                    </Button>
-                    <Button
-                      variant="warning"
-                      size="sm"
-                      className="me-2"
-                      onClick={() => {
-                        setEditingProject(project);
-                        setShowEditModal(true);
-                      }}
-                    >
-                      Edit
-                    </Button>
-                    <Button
-                      variant="danger"
-                      size="sm"
-                      onClick={() => deleteProject(project._id)}
-                    >
-                      Delete
-                    </Button>
-                  </td>
-                </tr>
+                <option key={project._id} value={project._id}>
+                  {project.name}
+                </option>
               ))}
-            </tbody>
-          </Table>
-        ) : (
-          <p className={styles.emptyMessage}>
-            No projects found. Add a new project to get started!
-          </p>
-        )}
-      </main>
-      <hr />
-      <Modal show={showEditModal} onHide={() => setShowEditModal(false)}>
-        <Modal.Header closeButton>
-          <Modal.Title>Edit Project</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Form onSubmit={updateProject}>
-            <Form.Group className="mb-3">
-              <Form.Control
-                type="text"
-                value={editingProject?.name || ""}
-                onChange={(e) =>
-                  setEditingProject(
-                    editingProject
-                      ? { ...editingProject, name: e.target.value }
-                      : null
-                  )
-                }
-                placeholder="Enter Project Name"
-                required
-              />
-            </Form.Group>
-            <Button variant="primary" type="submit">
-              Update Project
-            </Button>
-          </Form>
-        </Modal.Body>
-      </Modal>
+            </Form.Select>
+          </Col>
+          <Col>
+            <Link href="/project-list">
+              <Button variant="secondary" className="float-end">
+                Manage Projects
+              </Button>
+            </Link>
+          </Col>
+        </Row>
+      </div>
 
-      {selectedProjectId && (
-        <div className={styles.chartContainer}>
-          <h2>Budget Details</h2>
-          <hr></hr>
-          <Tabs
-            defaultActiveKey="table"
-            id="budget-tabs"
-            className="mb-3"
-            variant="pills"
-          >
-            <Tab eventKey="table" title="Budget Table">
-              <BudgetTable projectId={selectedProjectId} />
-            </Tab>
-            <Tab eventKey="chart" title="Budget Chart">
-              <BudgetPieChart projectId={selectedProjectId} />
-            </Tab>
-          </Tabs>
-        </div>
+      {selectedProject && (
+        <Tabs
+          activeKey={activeTab}
+          onSelect={(k) => setActiveTab(k || "dashboard")}
+          className="mb-3 custom-tabs"
+        >
+          <Tab eventKey="dashboard" title="Dashboard">
+            <MemoizedBudgetDashboard
+              projectId={selectedProject}
+              categories={categories}
+            />
+          </Tab>
+          <Tab eventKey="table" title="Budget Table">
+            <MemoizedBudgetTable
+              projectId={selectedProject}
+              categories={categories}
+              projectName={
+                projects.find((p) => p._id === selectedProject)?.name
+              }
+            />
+          </Tab>
+          <Tab eventKey="piechart" title="Budget Pie Chart">
+            <MemoizedBudgetPieChart categories={categories} />
+          </Tab>
+          <Tab eventKey="expenditure" title="Expenditure Dashboard">
+            <MemoizedExpenditureDashboard
+              projectId={selectedProject}
+              expenditures={expenditures}
+            />
+          </Tab>
+          <Tab eventKey="budgetVsExpenditure" title="Budget vs Expenditure">
+            <MemoizedBudgetVsExpenditureChart categories={prepareChartData()} />
+          </Tab>
+        </Tabs>
       )}
     </div>
   );
