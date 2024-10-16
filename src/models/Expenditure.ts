@@ -1,4 +1,4 @@
-import mongoose, { Schema, Document } from "mongoose";
+import mongoose, { Schema, Document } from 'mongoose';
 
 export interface IExpenditure extends Document {
   projectId: mongoose.Types.ObjectId;
@@ -13,15 +13,15 @@ export interface IExpenditure extends Document {
 
 const ExpenditureSchema: Schema = new Schema(
   {
-    projectId: { type: Schema.Types.ObjectId, ref: "Project", required: true },
+    projectId: { type: Schema.Types.ObjectId, ref: 'Project', required: true },
     categoryId: {
       type: Schema.Types.ObjectId,
-      ref: "Category",
+      ref: 'Category',
       required: true,
     },
     subCategoryId: {
       type: Schema.Types.ObjectId,
-      ref: "SubCategory",
+      ref: 'SubCategory',
       required: true,
     },
     amount: { type: Number, required: true },
@@ -32,4 +32,4 @@ const ExpenditureSchema: Schema = new Schema(
 );
 
 export default mongoose.models.Expenditure ||
-  mongoose.model<IExpenditure>("Expenditure", ExpenditureSchema);
+  mongoose.model<IExpenditure>('Expenditure', ExpenditureSchema);

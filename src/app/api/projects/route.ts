@@ -12,7 +12,7 @@ export async function GET() {
     console.error("Failed to fetch projects:", error);
     return NextResponse.json(
       { error: "Failed to fetch projects" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -25,7 +25,7 @@ export async function POST(request: NextRequest) {
     if (!name || typeof name !== "string" || name.trim() === "") {
       return NextResponse.json(
         { error: "Invalid project name" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -35,7 +35,7 @@ export async function POST(request: NextRequest) {
     console.error("Failed to add project:", error);
     return NextResponse.json(
       { error: "Failed to add project" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

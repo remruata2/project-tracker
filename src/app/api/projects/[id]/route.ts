@@ -6,7 +6,7 @@ initModels();
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: { id: string } },
 ) {
   try {
     await connectToDatabase();
@@ -27,14 +27,14 @@ export async function GET(
     console.error("Error in GET /api/projects/[id]:", error);
     return NextResponse.json(
       { error: "Internal Server Error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: { id: string } },
 ) {
   try {
     await connectToDatabase();
@@ -53,7 +53,7 @@ export async function PUT(
     const updatedProject = await Project.findByIdAndUpdate(
       id,
       { $set: { name: body.name.trim() } },
-      { new: true, runValidators: true }
+      { new: true, runValidators: true },
     );
 
     if (!updatedProject) {
@@ -65,14 +65,14 @@ export async function PUT(
     console.error("Error in PUT /api/projects/[id]:", error);
     return NextResponse.json(
       { error: "Internal Server Error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
 
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: { id: string } },
 ) {
   try {
     await connectToDatabase();
@@ -86,13 +86,13 @@ export async function DELETE(
 
     return NextResponse.json(
       { message: "Project deleted successfully" },
-      { status: 200 }
+      { status: 200 },
     );
   } catch (error) {
     console.error("Error deleting project:", error);
     return NextResponse.json(
       { error: "Internal Server Error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

@@ -1,19 +1,19 @@
-import mongoose from "mongoose";
-import { ICategory } from "./Category";
-import { ISubcategory } from "./Subcategory";
-import { IProject } from "./Project"; // Assuming you have a Project model
+import mongoose from 'mongoose';
+import { ICategory } from './Category';
+import { ISubcategory } from './Subcategory';
+import { IProject } from './Project'; // Assuming you have a Project model
 
 const ProjectSchema = new mongoose.Schema<IProject>(
   {
     name: {
       type: String,
-      required: [true, "Please provide a name for this project."],
-      maxlength: [60, "Name cannot be more than 60 characters"],
+      required: [true, 'Please provide a name for this project.'],
+      maxlength: [60, 'Name cannot be more than 60 characters'],
     },
     categories: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Category",
+        ref: 'Category',
       },
     ],
     // Add other fields as needed
@@ -27,11 +27,11 @@ const categorySchema = new mongoose.Schema<ICategory>(
     name: { type: String, required: true, trim: true },
     projectId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Project",
+      ref: 'Project',
       required: true,
     },
     subcategories: [
-      { type: mongoose.Schema.Types.ObjectId, ref: "Subcategory" },
+      { type: mongoose.Schema.Types.ObjectId, ref: 'Subcategory' },
     ],
   },
   { timestamps: true }
@@ -44,7 +44,7 @@ const subcategorySchema = new mongoose.Schema<ISubcategory>(
     amount: { type: Number, required: true },
     category: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Category",
+      ref: 'Category',
       required: true,
     },
   },
@@ -56,7 +56,7 @@ const subcategorySchema = new mongoose.Schema<ISubcategory>(
 const expenditureSchema = new mongoose.Schema({
   subcategory: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Subcategory",
+    ref: 'Subcategory',
     required: true,
   },
   amount: { type: Number, required: true },
@@ -66,12 +66,12 @@ const expenditureSchema = new mongoose.Schema({
 
 export const Category =
   mongoose.models.Category ||
-  mongoose.model<ICategory>("Category", categorySchema);
+  mongoose.model<ICategory>('Category', categorySchema);
 export const Subcategory =
   mongoose.models.Subcategory ||
-  mongoose.model<ISubcategory>("Subcategory", subcategorySchema);
+  mongoose.model<ISubcategory>('Subcategory', subcategorySchema);
 export const Project =
-  mongoose.models.Project || mongoose.model<IProject>("Project", ProjectSchema);
+  mongoose.models.Project || mongoose.model<IProject>('Project', ProjectSchema);
 
 // Export a function to initialize models
 export function initModels() {

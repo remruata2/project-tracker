@@ -1,0 +1,180 @@
+[14:35:27.439] Running build in Washington, D.C., USA (East) – iad1
+[14:35:27.562] Cloning github.com/remruata2/project-tracker (Branch: main, Commit: 201bf08)
+[14:35:27.891] Cloning completed: 328.207ms
+[14:35:27.933] Previous build cache not available
+[14:35:28.309] Running "vercel build"
+[14:35:28.734] Vercel CLI 37.8.0
+[14:35:29.151] Installing dependencies...
+[14:35:32.650] npm warn deprecated rimraf@3.0.2: Rimraf versions prior to v4 are no longer supported
+[14:35:33.088] npm warn deprecated inflight@1.0.6: This module is not supported, and leaks memory. Do not use it. Check out lru-cache if you want a good and tested way to coalesce async requests by a key value, which is much more comprehensive and powerful.
+[14:35:34.417] npm warn deprecated @humanwhocodes/object-schema@2.0.3: Use @eslint/object-schema instead
+[14:35:34.440] npm warn deprecated @humanwhocodes/config-array@0.13.0: Use @eslint/config-array instead
+[14:35:34.472] npm warn deprecated glob@7.2.3: Glob versions prior to v9 are no longer supported
+[14:35:36.980] npm warn deprecated eslint@8.57.1: This version is no longer supported. Please see https://eslint.org/version-support for other options.
+[14:35:42.777]
+[14:35:42.778] added 405 packages in 13s
+[14:35:42.779]
+[14:35:42.779] 137 packages are looking for funding
+[14:35:42.779] run `npm fund` for details
+[14:35:42.805] Detected Next.js version: 14.2.15
+[14:35:42.811] Running "npm run build"
+[14:35:42.952]
+[14:35:42.952] > project-tracker@0.1.0 build
+[14:35:42.952] > next build
+[14:35:42.953]
+[14:35:43.666] Attention: Next.js now collects completely anonymous telemetry regarding usage.
+[14:35:43.666] This information is used to shape Next.js' roadmap and prioritize features.
+[14:35:43.667] You can learn more, including how to opt-out if you'd not like to participate in this anonymous program, by visiting the following URL:
+[14:35:43.667] https://nextjs.org/telemetry
+[14:35:43.667]
+[14:35:43.732] ▲ Next.js 14.2.15
+[14:35:43.733] - Environments: .env
+[14:35:43.733]
+[14:35:43.806] Creating an optimized production build ...
+[14:36:11.645] ✓ Compiled successfully
+[14:36:11.646] Linting and checking validity of types ...
+[14:36:19.329]
+[14:36:19.329] Failed to compile.
+[14:36:19.330]
+[14:36:19.330] ./src/app/api/categories/[id]/route.ts
+[14:36:19.330] 11:41 Error: Insert `,` prettier/prettier
+[14:36:19.330] 30:41 Error: Insert `,` prettier/prettier
+[14:36:19.330] 36:24 Error: Insert `,` prettier/prettier
+[14:36:19.330] 45:22 Error: Insert `,` prettier/prettier
+[14:36:19.330] 52:41 Error: Insert `,` prettier/prettier
+[14:36:19.331] 61:24 Error: Insert `,` prettier/prettier
+[14:36:19.331] 71:24 Error: Insert `,` prettier/prettier
+[14:36:19.331] 88:22 Error: Insert `,` prettier/prettier
+[14:36:19.331]
+[14:36:19.331] ./src/app/api/categories/route.ts
+[14:36:19.331] 29:22 Error: Insert `,` prettier/prettier
+[14:36:19.331] 52:24 Error: Insert `,` prettier/prettier
+[14:36:19.331] 75:22 Error: Insert `,` prettier/prettier
+[14:36:19.331]
+[14:36:19.332] ./src/app/api/expenditures/[id]/route.ts
+[14:36:19.332] 9:41 Error: Insert `,` prettier/prettier
+[14:36:19.333] 17:24 Error: Insert `,` prettier/prettier
+[14:36:19.333] 24:22 Error: Insert `,` prettier/prettier
+[14:36:19.333] 32:41 Error: Insert `,` prettier/prettier
+[14:36:19.333] 40:24 Error: Insert `,` prettier/prettier
+[14:36:19.333] 47:22 Error: Insert `,` prettier/prettier
+[14:36:19.333] 55:41 Error: Insert `,` prettier/prettier
+[14:36:19.333] 63:20 Error: Insert `,` prettier/prettier
+[14:36:19.334] 68:24 Error: Insert `,` prettier/prettier
+[14:36:19.334] 75:22 Error: Insert `,` prettier/prettier
+[14:36:19.334]
+[14:36:19.334] ./src/app/api/expenditures/route.ts
+[14:36:19.334] 54:22 Error: Insert `,` prettier/prettier
+[14:36:19.334] 66:22 Error: Insert `,` prettier/prettier
+[14:36:19.334]
+[14:36:19.334] ./src/app/api/projects/[id]/route.ts
+[14:36:19.334] 9:41 Error: Insert `,` prettier/prettier
+[14:36:19.334] 30:22 Error: Insert `,` prettier/prettier
+[14:36:19.334] 37:41 Error: Insert `,` prettier/prettier
+[14:36:19.334] 56:41 Error: Insert `,` prettier/prettier
+[14:36:19.334] 68:22 Error: Insert `,` prettier/prettier
+[14:36:19.334] 75:41 Error: Insert `,` prettier/prettier
+[14:36:19.335] 89:22 Error: Insert `,` prettier/prettier
+[14:36:19.335] 95:22 Error: Insert `,` prettier/prettier
+[14:36:19.335]
+[14:36:19.335] ./src/app/api/projects/route.ts
+[14:36:19.335] 15:22 Error: Insert `,` prettier/prettier
+[14:36:19.335] 28:24 Error: Insert `,` prettier/prettier
+[14:36:19.335] 38:22 Error: Insert `,` prettier/prettier
+[14:36:19.335]
+[14:36:19.335] ./src/app/api/subCategories/[id]/route.ts
+[14:36:19.335] 8:41 Error: Insert `,` prettier/prettier
+[14:36:19.336] 19:41 Error: Insert `,` prettier/prettier
+[14:36:19.336] 25:24 Error: Insert `,` prettier/prettier
+[14:36:19.336] 34:22 Error: Insert `,` prettier/prettier
+[14:36:19.336] 42:41 Error: Insert `,` prettier/prettier
+[14:36:19.336] 49:31 Error: Replace `·await·Subcategory.findByIdAndDelete(⏎······subcategoryId⏎····` with `⏎······await·Subcategory.findByIdAndDelete(subcategoryId` prettier/prettier
+[14:36:19.336] 56:24 Error: Insert `,` prettier/prettier
+[14:36:19.336] 65:22 Error: Insert `,` prettier/prettier
+[14:36:19.336]
+[14:36:19.336] ./src/app/api/subCategories/route.ts
+[14:36:19.336] 17:22 Error: Insert `,` prettier/prettier
+[14:36:19.336] 31:24 Error: Insert `,` prettier/prettier
+[14:36:19.336] 38:24 Error: Insert `,` prettier/prettier
+[14:36:19.336] 47:24 Error: Insert `,` prettier/prettier
+[14:36:19.337] 65:24 Error: Insert `,` prettier/prettier
+[14:36:19.337] 84:22 Error: Insert `,` prettier/prettier
+[14:36:19.337]
+[14:36:19.337] ./src/app/categories/page.tsx
+[14:36:19.337] 40:9 Error: Insert `,` prettier/prettier
+[14:36:19.337] 121:40 Error: Insert `,` prettier/prettier
+[14:36:19.337] 193:43 Error: Insert `,` prettier/prettier
+[14:36:19.337] 222:36 Error: Insert `,` prettier/prettier
+[14:36:19.337]
+[14:36:19.337] ./src/app/expenditures/page.tsx
+[14:36:19.337] 64:6 Warning: React Hook useEffect has a missing dependency: 'fetchExpenditures'. Either include it or remove the dependency array. react-hooks/exhaustive-deps
+[14:36:19.337]
+[14:36:19.338] ./src/components/BudgetDashboard.tsx
+[14:36:19.338] 1:44 Error: Replace `"react"` with `'react'` prettier/prettier
+[14:36:19.338] 2:53 Error: Replace `"react-bootstrap"` with `'react-bootstrap'` prettier/prettier
+[14:36:19.338] 3:20 Error: Replace `"./BudgetDashboard.module.css"` with `'./BudgetDashboard.module.css'` prettier/prettier
+[14:36:19.338] 29:40 Error: Replace `"en-IN"` with `'en-IN'` prettier/prettier
+[14:36:19.338] 48:23 Error: Replace `"primary",·"success",·"secondary"` with `'primary',·'success',·'secondary'` prettier/prettier
+[14:36:19.338] 88:19 Error: Replace `"PUT"` with `'PUT'` prettier/prettier
+[14:36:19.338] 90:13 Error: Replace `"Content-Type":·"application/json"` with `'Content-Type':·'application/json'` prettier/prettier
+[14:36:19.338] 101:25 Error: Replace `"Failed·to·update·subcategory"` with `'Failed·to·update·subcategory'` prettier/prettier
+[14:36:19.338] 104:21 Error: Replace `"Error·updating·subcategory:"` with `'Error·updating·subcategory:'` prettier/prettier
+[14:36:19.338]
+[14:36:19.339] ./src/components/BudgetTable.tsx
+[14:36:19.339] 1:44 Error: Replace `"react"` with `'react'` prettier/prettier
+[14:36:19.339] 2:43 Error: Replace `"react-bootstrap"` with `'react-bootstrap'` prettier/prettier
+[14:36:19.339]
+[14:36:19.339] ./src/components/BudgetVsExpenditure.tsx
+[14:36:19.339] 1:19 Error: Replace `"react"` with `'react'` prettier/prettier
+[14:36:19.339] 11:8 Error: Replace `"recharts"` with `'recharts'` prettier/prettier
+[14:36:19.339]
+[14:36:19.339] ./src/components/EditExpenditure.tsx
+[14:36:19.339] 1:44 Error: Replace `"react"` with `'react'` prettier/prettier
+[14:36:19.339] 2:37 Error: Replace `"react-bootstrap"` with `'react-bootstrap'` prettier/prettier
+[14:36:19.339] 3:29 Error: Replace `"@/app/expenditures/page"` with `'@/app/expenditures/page'` prettier/prettier
+[14:36:19.340] 23:11 Error: Replace `""` with `''` prettier/prettier
+[14:36:19.340] 24:18 Error: Replace `""` with `''` prettier/prettier
+[14:36:19.340] 31:38 Error: Replace `"T"` with `'T'` prettier/prettier
+[14:36:19.340]
+[14:36:19.340] ./src/components/Header.tsx
+[14:36:19.340] 1:1 Error: Replace `"use·client"` with `'use·client'` prettier/prettier
+[14:36:19.340] 3:19 Error: Replace `"react"` with `'react'` prettier/prettier
+[14:36:19.340] 4:51 Error: Replace `"react-bootstrap"` with `'react-bootstrap'` prettier/prettier
+[14:36:19.340] 5:18 Error: Replace `"next/link"` with `'next/link'` prettier/prettier
+[14:36:19.340] 6:20 Error: Replace `"./Header.module.css"` with `'./Header.module.css'` prettier/prettier
+[14:36:19.340]
+[14:36:19.340] ./src/models/Category.ts
+[14:36:19.340] 1:34 Error: Replace `"mongoose"` with `'mongoose'` prettier/prettier
+[14:36:19.340]
+[14:36:19.340] ./src/models/Expenditure.ts
+[14:36:19.341] 1:44 Error: Replace `"mongoose"` with `'mongoose'` prettier/prettier
+[14:36:19.341] 16:52 Error: Replace `"Project"` with `'Project'` prettier/prettier
+[14:36:19.341] 19:12 Error: Replace `"Category"` with `'Category'` prettier/prettier
+[14:36:19.341] 24:12 Error: Replace `"SubCategory"` with `'SubCategory'` prettier/prettier
+[14:36:19.341] 35:32 Error: Replace `"Expenditure"` with `'Expenditure'` prettier/prettier
+[14:36:19.341]
+[14:36:19.341] ./src/models/Project.ts
+[14:36:19.341] 1:34 Error: Replace `"mongoose"` with `'mongoose'` prettier/prettier
+[14:36:19.341]
+[14:36:19.341] ./src/models/Subcategory.ts
+[14:36:19.342] 1:34 Error: Replace `"mongoose"` with `'mongoose'` prettier/prettier
+[14:36:19.342]
+[14:36:19.342] ./src/models/index.ts
+[14:36:19.342] 1:22 Error: Replace `"mongoose"` with `'mongoose'` prettier/prettier
+[14:36:19.342] 2:27 Error: Replace `"./Category"` with `'./Category'` prettier/prettier
+[14:36:19.342] 3:30 Error: Replace `"./Subcategory"` with `'./Subcategory'` prettier/prettier
+[14:36:19.342] 4:26 Error: Replace `"./Project"` with `'./Project'` prettier/prettier
+[14:36:19.342] 10:24 Error: Replace `"Please·provide·a·name·for·this·project."` with `'Please·provide·a·name·for·this·project.'` prettier/prettier
+[14:36:19.342] 11:23 Error: Replace `"Name·cannot·be·more·than·60·characters"` with `'Name·cannot·be·more·than·60·characters'` prettier/prettier
+[14:36:19.342] 16:14 Error: Replace `"Category"` with `'Category'` prettier/prettier
+[14:36:19.342] 30:12 Error: Replace `"Project"` with `'Project'` prettier/prettier
+[14:36:19.342] 34:52 Error: Replace `"Subcategory"` with `'Subcategory'` prettier/prettier
+[14:36:19.343] 47:12 Error: Replace `"Category"` with `'Category'` prettier/prettier
+[14:36:19.343] 59:10 Error: Replace `"Subcategory"` with `'Subcategory'` prettier/prettier
+[14:36:19.343] 69:29 Error: Replace `"Category"` with `'Category'` prettier/prettier
+[14:36:19.343] 72:32 Error: Replace `"Subcategory"` with `'Subcategory'` prettier/prettier
+[14:36:19.343] 74:55 Error: Replace `"Project"` with `'Project'` prettier/prettier
+[14:36:19.343]
+[14:36:19.344] info - Need to disable some ESLint rules? Learn more here: https://nextjs.org/docs/basic-features/eslint#disabling-rules
+[14:36:19.393] Error: Command "npm run build" exited with 1
+[14:36:20.030]

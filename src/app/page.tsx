@@ -169,9 +169,7 @@ export default function Home() {
 
   useEffect(() => {
     if (selectedProject) {
-      console.log("Calling prepareChartData");
       const chartData = prepareChartData();
-      console.log("Chart Data from useEffect:", chartData);
     }
   }, [selectedProject, prepareChartData]);
 

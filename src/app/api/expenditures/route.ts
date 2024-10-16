@@ -51,7 +51,7 @@ export async function GET(request: NextRequest) {
     console.error("Error in GET /api/expenditures:", error);
     return NextResponse.json(
       { success: false, error: error.message },
-      { status: 400 }
+      { status: 400 },
     );
   }
 }
@@ -63,7 +63,7 @@ export async function POST(request: NextRequest) {
     const expenditure = await Expenditure.create(body);
     return NextResponse.json(
       { success: true, data: expenditure },
-      { status: 201 }
+      { status: 201 },
     );
   } catch (error) {
     return NextResponse.json({ success: false }, { status: 400 });

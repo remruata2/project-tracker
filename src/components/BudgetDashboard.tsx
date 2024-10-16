@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
-import { Card, Row, Col, Modal, Button, Form } from "react-bootstrap";
-import styles from "./BudgetDashboard.module.css";
+import React, { useState, useEffect } from 'react';
+import { Card, Row, Col, Modal, Button, Form } from 'react-bootstrap';
+import styles from './BudgetDashboard.module.css';
 
 export interface Project {
   _id: string;
@@ -26,7 +26,7 @@ interface BudgetDashboardProps {
 }
 
 const formatIndianNumber = (num: number): string => {
-  const formatted = num.toLocaleString("en-IN", {
+  const formatted = num.toLocaleString('en-IN', {
     maximumFractionDigits: 0,
     useGrouping: true,
   });
@@ -45,7 +45,7 @@ const BudgetDashboard: React.FC<BudgetDashboardProps> = ({
   const [editingSubcategory, setEditingSubcategory] =
     useState<Subcategory | null>(null);
 
-  const cardColors = ["primary", "success", "secondary"];
+  const cardColors = ['primary', 'success', 'secondary'];
 
   useEffect(() => {
     // Calculate total budget whenever categories change
@@ -85,9 +85,9 @@ const BudgetDashboard: React.FC<BudgetDashboardProps> = ({
       const response = await fetch(
         `/api/subCategories/${editingSubcategory._id}`,
         {
-          method: "PUT",
+          method: 'PUT',
           headers: {
-            "Content-Type": "application/json",
+            'Content-Type': 'application/json',
           },
           body: JSON.stringify({ amount: editingSubcategory.amount }),
         }
@@ -98,10 +98,10 @@ const BudgetDashboard: React.FC<BudgetDashboardProps> = ({
         // Here we just close the editing state
         setEditingSubcategory(null);
       } else {
-        throw new Error("Failed to update subcategory");
+        throw new Error('Failed to update subcategory');
       }
     } catch (error) {
-      console.error("Error updating subcategory:", error);
+      console.error('Error updating subcategory:', error);
     }
   };
 

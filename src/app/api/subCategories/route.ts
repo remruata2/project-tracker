@@ -14,7 +14,7 @@ export async function GET() {
     console.error("Error fetching subcategories:", error);
     return NextResponse.json(
       { error: "Internal Server Error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -28,14 +28,14 @@ export async function POST(request: Request) {
     if (!name || !parentCategoryId || !amount) {
       return NextResponse.json(
         { error: "Name, Parent ID and amount are required" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
     if (typeof amount !== "number" || isNaN(amount)) {
       return NextResponse.json(
         { error: "Amount must be a valid number" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -44,7 +44,7 @@ export async function POST(request: Request) {
     if (!parentCategory) {
       return NextResponse.json(
         { error: "Parent category not found" },
-        { status: 404 }
+        { status: 404 },
       );
     }
     console.log(typeof amount);
@@ -62,7 +62,7 @@ export async function POST(request: Request) {
       console.error("Validation error:", validationError);
       return NextResponse.json(
         { error: "Validation failed", details: validationError.errors },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -81,7 +81,7 @@ export async function POST(request: Request) {
     console.error("Error creating subcategory:", error);
     return NextResponse.json(
       { error: "Internal Server Error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

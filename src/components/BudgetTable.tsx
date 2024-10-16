@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { Card, Row, Col, Container } from "react-bootstrap";
+import React, { useEffect, useState } from 'react';
+import { Card, Row, Col, Container } from 'react-bootstrap';
 
 interface Subcategory {
   name: string;

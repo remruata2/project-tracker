@@ -5,7 +5,7 @@ import { Subcategory } from "@/models";
 // Update operation
 export async function PUT(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: { id: string } },
 ) {
   try {
     await connectToDatabase();
@@ -16,13 +16,13 @@ export async function PUT(
     const updatedSubcategory = await Subcategory.findByIdAndUpdate(
       subcategoryId,
       body,
-      { new: true, runValidators: true }
+      { new: true, runValidators: true },
     );
 
     if (!updatedSubcategory) {
       return NextResponse.json(
         { error: "Subcategory not found" },
-        { status: 404 }
+        { status: 404 },
       );
     }
 
@@ -31,7 +31,7 @@ export async function PUT(
     console.error("Error updating subcategory:", error);
     return NextResponse.json(
       { error: "Internal Server Error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -39,21 +39,20 @@ export async function PUT(
 // Delete operation
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: { id: string } },
 ) {
   try {
     await connectToDatabase();
 
     const subcategoryId = params.id;
 
-    const deletedSubcategory = await Subcategory.findByIdAndDelete(
-      subcategoryId
-    );
+    const deletedSubcategory =
+      await Subcategory.findByIdAndDelete(subcategoryId);
 
     if (!deletedSubcategory) {
       return NextResponse.json(
         { error: "Subcategory not found" },
-        { status: 404 }
+        { status: 404 },
       );
     }
 
@@ -62,7 +61,7 @@ export async function DELETE(
     console.error("Error deleting subcategory:", error);
     return NextResponse.json(
       { error: "Internal Server Error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

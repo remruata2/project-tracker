@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import React from "react";
-import { Navbar, Nav, Container, Offcanvas } from "react-bootstrap";
-import Link from "next/link";
-import styles from "./Header.module.css";
+import React from 'react';
+import { Navbar, Nav, Container, Offcanvas } from 'react-bootstrap';
+import Link from 'next/link';
+import styles from './Header.module.css';
 
 const Header: React.FC = () => {
   return (

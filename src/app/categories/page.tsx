@@ -37,7 +37,7 @@ export default function ManageCategories() {
   const [projectId, setProjectId] = useState("");
   const [subcategoryName, setSubcategoryName] = useState("");
   const [subcategoryAmount, setSubcategoryAmount] = useState<number | null>(
-    null
+    null,
   );
   const [parentCategoryId, setParentCategoryId] = useState("");
 
@@ -118,7 +118,7 @@ export default function ManageCategories() {
   };
 
   const handleSubcategorySubmit = async (
-    e: React.FormEvent<HTMLFormElement>
+    e: React.FormEvent<HTMLFormElement>,
   ) => {
     e.preventDefault();
     setIsLoading(true);
@@ -190,7 +190,7 @@ export default function ManageCategories() {
   };
 
   const handleSubcategoryAmountChange = (
-    e: React.ChangeEvent<HTMLInputElement>
+    e: React.ChangeEvent<HTMLInputElement>,
   ) => {
     const value = e.target.value;
     setSubcategoryAmount(value === "" ? null : parseFloat(value));
@@ -219,7 +219,7 @@ export default function ManageCategories() {
     const newName = prompt("Enter new name for subcategory:", subcategory.name);
     const newAmountStr = prompt(
       "Enter new amount for subcategory:",
-      subcategory.amount.toString()
+      subcategory.amount.toString(),
     );
     const newAmount = newAmountStr ? parseFloat(newAmountStr) : null;
 

@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
-import { Modal, Button, Form } from "react-bootstrap";
-import { Expenditure } from "@/app/expenditures/page";
+import React, { useState, useEffect } from 'react';
+import { Modal, Button, Form } from 'react-bootstrap';
+import { Expenditure } from '@/app/expenditures/page';
 
 interface EditExpenditureProps {
   show: boolean;
@@ -20,15 +20,15 @@ const EditExpenditure: React.FC<EditExpenditureProps> = ({
 }) => {
   const [formData, setFormData] = useState<Partial<Expenditure>>({
     amount: 0,
-    date: "",
-    description: "",
+    date: '',
+    description: '',
   });
 
   useEffect(() => {
     if (expenditure) {
       setFormData({
         amount: expenditure.amount,
-        date: expenditure.date.split("T")[0], // Format date for input
+        date: expenditure.date.split('T')[0], // Format date for input
         description: expenditure.description,
       });
     }

@@ -61,7 +61,7 @@ export default function Expenditures() {
 
   useEffect(() => {
     fetchExpenditures(currentPage);
-  }, [currentPage, expendituresPerPage]);
+  }, [currentPage, expendituresPerPage, fetchExpenditures]);
 
   async function fetchExpenditures(page = 1) {
     try {
