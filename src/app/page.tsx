@@ -1,16 +1,23 @@
 /* eslint-disable prettier/prettier */
 "use client";
 
-import React, { useEffect, useState, useCallback, useMemo } from "react";
+import React, {
+  useEffect,
+  useState,
+  useCallback,
+  useMemo,
+  Suspense,
+} from "react";
 import styles from "@/app/page.module.css";
 import { Form, Tab, Tabs, Row, Col, Button } from "react-bootstrap";
 import BudgetPieChart from "@/components/BudgetChart";
 import BudgetTable from "@/components/BudgetTable";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
 import BudgetDashboard from "@/components/BudgetDashboard";
 import ExpenditureDashboard from "@/components/ExpenditureDashboard";
 import BudgetVsExpenditureChart from "@/components/BudgetVsExpenditure";
+import { SearchParamsWrapper } from "@/components/SearchParams";
+
 import "@/app/custom-tabs.css";
 
 export interface Project {
@@ -50,19 +57,12 @@ export interface Expenditure {
   description: string;
 }
 
-export default function Home() {
+const ProjectContent = ({ projectId }: { projectId: string | null }) => {
   const [projects, setProjects] = useState<Project[]>([]);
   const [selectedProject, setSelectedProject] = useState<string>("");
   const [activeTab, setActiveTab] = useState<string>("dashboard");
-  const searchParams = useSearchParams();
-  const projectId = searchParams.get("projectId");
   const [expenditures, setExpenditures] = useState<Expenditure[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
-  const MemoizedBudgetDashboard = React.memo(BudgetDashboard);
-  const MemoizedBudgetPieChart = React.memo(BudgetPieChart);
-  const MemoizedExpenditureDashboard = React.memo(ExpenditureDashboard);
-  const MemoizedBudgetVsExpenditureChart = React.memo(BudgetVsExpenditureChart);
-  const MemoizedBudgetTable = React.memo(BudgetTable);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -119,7 +119,7 @@ export default function Home() {
   useEffect(() => {
     fetchProjects();
     fetchCategories();
-  }, []);
+  }, [fetchProjects, fetchCategories]);
 
   useEffect(() => {
     if (projectId) {
@@ -128,10 +128,13 @@ export default function Home() {
     }
   }, [projectId, fetchExpenditures]);
 
-  const handleProjectSelect = useCallback((projectId: string) => {
-    setSelectedProject(projectId);
-    fetchExpenditures(projectId);
-  }, []);
+  const handleProjectSelect = useCallback(
+    (projectId: string) => {
+      setSelectedProject(projectId);
+      fetchExpenditures(projectId);
+    },
+    [fetchExpenditures],
+  );
 
   const prepareChartData = useCallback(() => {
     if (!selectedProject) {
@@ -141,7 +144,6 @@ export default function Home() {
 
     const categoryMap = new Map();
 
-    // First, find all categories associated with the selected project and calculate their budgets
     categories.forEach((category) => {
       if (category.projectId._id === selectedProject) {
         const categoryBudget = category.subcategories.reduce(
@@ -149,14 +151,13 @@ export default function Home() {
           0,
         );
         categoryMap.set(category._id, {
-          name: category.name, // Store the name for later use
+          name: category.name,
           budget: categoryBudget,
           expenditure: 0,
         });
       }
     });
 
-    // Then, calculate expenditure for each category
     expenditures.forEach((item) => {
       if (categoryMap.has(item.categoryId._id)) {
         categoryMap.get(item.categoryId._id).expenditure += item.amount;
@@ -176,8 +177,14 @@ export default function Home() {
 
   const chartData = useMemo(() => prepareChartData(), [prepareChartData]);
 
+  const MemoizedBudgetDashboard = React.memo(BudgetDashboard);
+  const MemoizedBudgetPieChart = React.memo(BudgetPieChart);
+  const MemoizedExpenditureDashboard = React.memo(ExpenditureDashboard);
+  const MemoizedBudgetVsExpenditureChart = React.memo(BudgetVsExpenditureChart);
+  const MemoizedBudgetTable = React.memo(BudgetTable);
+
   return (
-    <div className={styles.container}>
+    <>
       {isLoading && <p>Loading...</p>}
       {error && <p className="error">{error}</p>}
       <h1>Project Budget Tracker</h1>
@@ -241,6 +248,18 @@ export default function Home() {
           </Tab>
         </Tabs>
       )}
+    </>
+  );
+};
+
+export default function Home() {
+  return (
+    <div className={styles.container}>
+      <Suspense fallback={<div>Loading search params...</div>}>
+        <SearchParamsWrapper>
+          {(projectId) => <ProjectContent projectId={projectId} />}
+        </SearchParamsWrapper>
+      </Suspense>
     </div>
   );
 }
