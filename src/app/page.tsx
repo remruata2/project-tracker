@@ -80,7 +80,7 @@ export default function Home() {
   const fetchExpenditures = async (projectId: string) => {
     try {
       const response = await fetch(
-        `/api/expenditures?all=true&projectId=${projectId}`
+        `/api/expenditures?all=true&projectId=${projectId}`,
       );
       if (response.ok) {
         const data = await response.json();
@@ -138,7 +138,7 @@ export default function Home() {
       if (category.projectId._id === selectedProject) {
         const categoryBudget = category.subcategories.reduce(
           (total, sub) => total + sub.amount,
-          0
+          0,
         );
         categoryMap.set(category._id, {
           name: category.name, // Store the name for later use
@@ -221,7 +221,8 @@ export default function Home() {
               projectId={selectedProject}
               categories={categories}
               projectName={
-                projects.find((p) => p._id === selectedProject)?.name
+                projects.find((p) => p._id === selectedProject)?.name ||
+                "Unknown Project"
               }
             />
           </Tab>
@@ -229,10 +230,7 @@ export default function Home() {
             <MemoizedBudgetPieChart categories={categories} />
           </Tab>
           <Tab eventKey="expenditure" title="Expenditure Dashboard">
-            <MemoizedExpenditureDashboard
-              projectId={selectedProject}
-              expenditures={expenditures}
-            />
+            <MemoizedExpenditureDashboard expenditures={expenditures} />
           </Tab>
           <Tab eventKey="budgetVsExpenditure" title="Budget vs Expenditure">
             <MemoizedBudgetVsExpenditureChart categories={prepareChartData()} />

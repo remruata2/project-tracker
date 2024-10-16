@@ -1,11 +1,21 @@
-import React, { useState, useEffect } from "react";
-import { Modal, Button, Form, Row, Col } from "react-bootstrap";
-import { Expenditure } from "@/app/expenditures/page";
+import React, { useState, useEffect } from 'react';
+import { Modal, Button, Form, Row, Col } from 'react-bootstrap';
+
+interface Expenditure {
+  projectId: { _id: string };
+  categoryId: { _id: string; name: string };
+  subCategoryId: { _id: string; name: string };
+  amount: number;
+  description: string;
+  date: string;
+}
+
+type ExpenditureWithoutId = Omit<Expenditure, '_id'>;
 
 interface AddExpenditureProps {
   show: boolean;
   handleClose: () => void;
-  handleAddExpenditure: (expenditures: Omit<Expenditure, "_id">[]) => void;
+  handleAddExpenditure: (expenditures: ExpenditureWithoutId[]) => void;
 }
 
 interface Category {
@@ -14,22 +24,29 @@ interface Category {
   subcategories: { _id: string; name: string }[];
 }
 
+interface Project {
+  _id: string;
+  name: string;
+}
+
 const AddExpenditure: React.FC<AddExpenditureProps> = ({
   show,
   handleClose,
   handleAddExpenditure,
-}: AddExpenditureProps) => {
-  const [projectId, setProjectId] = useState("");
-  const [date, setDate] = useState("");
-  const [expenditures, setExpenditures] = useState([
+}) => {
+  const [projectId, setProjectId] = useState('');
+  const [date, setDate] = useState('');
+  const [expenditures, setExpenditures] = useState<
+    Partial<ExpenditureWithoutId>[]
+  >([
     {
-      categoryId: "",
-      subCategoryId: "",
-      amount: "",
-      description: "",
+      categoryId: { _id: '', name: '' },
+      subCategoryId: { _id: '', name: '' },
+      amount: 0,
+      description: '',
     },
   ]);
-  const [projects, setProjects] = useState<{ _id: string; name: string }[]>([]);
+  const [projects, setProjects] = useState<Project[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
 
   useEffect(() => {
@@ -45,7 +62,7 @@ const AddExpenditure: React.FC<AddExpenditureProps> = ({
   }, [projectId]);
 
   const fetchProjects = async () => {
-    const response = await fetch("/api/projects");
+    const response = await fetch('/api/projects');
     const data = await response.json();
     setProjects(data);
   };
@@ -60,36 +77,50 @@ const AddExpenditure: React.FC<AddExpenditureProps> = ({
 
   const handleExpenditureChange = (
     index: number,
-    field: string,
+    field: keyof ExpenditureWithoutId,
     value: string
   ) => {
     const newExpenditures = [...expenditures];
-    newExpenditures[index] = { ...newExpenditures[index], [field]: value };
+    if (field === 'categoryId' || field === 'subCategoryId') {
+      newExpenditures[index] = {
+        ...newExpenditures[index],
+        [field]: { _id: value, name: '' },
+      };
+    } else if (field === 'amount') {
+      newExpenditures[index] = {
+        ...newExpenditures[index],
+        [field]: parseFloat(value) || 0,
+      };
+    } else {
+      newExpenditures[index] = { ...newExpenditures[index], [field]: value };
+    }
     setExpenditures(newExpenditures);
   };
-  console.log(expenditures[0]);
 
   const handleAddMore = () => {
     setExpenditures([
       ...expenditures,
       {
-        categoryId: "",
-        subCategoryId: "",
-        amount: "",
-        description: "",
+        categoryId: { _id: '', name: '' },
+        subCategoryId: { _id: '', name: '' },
+        amount: 0,
+        description: '',
       },
     ]);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const expendituresToAdd = expenditures.map((exp) => ({
-      ...exp,
-      projectId,
-      date,
-      amount: parseFloat(exp.amount),
-    }));
-    console.log(expendituresToAdd);
+    const expendituresToAdd: ExpenditureWithoutId[] = expenditures.map(
+      (exp) => ({
+        projectId: { _id: projectId },
+        categoryId: exp.categoryId as { _id: string; name: string },
+        subCategoryId: exp.subCategoryId as { _id: string; name: string },
+        amount: exp.amount as number,
+        description: exp.description || '',
+        date: date,
+      })
+    );
     handleAddExpenditure(expendituresToAdd);
     handleClose();
   };
@@ -143,11 +174,11 @@ const AddExpenditure: React.FC<AddExpenditureProps> = ({
                 <Form.Group>
                   <Form.Label>Category</Form.Label>
                   <Form.Select
-                    value={expenditure.categoryId}
+                    value={expenditure.categoryId?._id || ''}
                     onChange={(e) =>
                       handleExpenditureChange(
                         index,
-                        "categoryId",
+                        'categoryId',
                         e.target.value
                       )
                     }
@@ -166,11 +197,11 @@ const AddExpenditure: React.FC<AddExpenditureProps> = ({
                 <Form.Group>
                   <Form.Label>Subcategory</Form.Label>
                   <Form.Select
-                    value={expenditure.subCategoryId}
+                    value={expenditure.subCategoryId?._id || ''}
                     onChange={(e) =>
                       handleExpenditureChange(
                         index,
-                        "subCategoryId",
+                        'subCategoryId',
                         e.target.value
                       )
                     }
@@ -178,7 +209,7 @@ const AddExpenditure: React.FC<AddExpenditureProps> = ({
                   >
                     <option value="">Select a subcategory</option>
                     {categories
-                      .find((cat) => cat._id === expenditure.categoryId)
+                      .find((cat) => cat._id === expenditure.categoryId?._id)
                       ?.subcategories?.map((sub) => (
                         <option key={sub._id} value={sub._id}>
                           {sub.name}
@@ -192,11 +223,11 @@ const AddExpenditure: React.FC<AddExpenditureProps> = ({
                   <Form.Label>Description</Form.Label>
                   <Form.Control
                     type="text"
-                    value={expenditure.description}
+                    value={expenditure.description || ''}
                     onChange={(e) =>
                       handleExpenditureChange(
                         index,
-                        "description",
+                        'description',
                         e.target.value
                       )
                     }
@@ -208,9 +239,9 @@ const AddExpenditure: React.FC<AddExpenditureProps> = ({
                   <Form.Label>Amount</Form.Label>
                   <Form.Control
                     type="number"
-                    value={expenditure.amount}
+                    value={expenditure.amount || ''}
                     onChange={(e) =>
-                      handleExpenditureChange(index, "amount", e.target.value)
+                      handleExpenditureChange(index, 'amount', e.target.value)
                     }
                     required
                   />

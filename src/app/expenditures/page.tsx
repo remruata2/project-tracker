@@ -18,12 +18,13 @@ import ExpenditureDashboard from "../../components/ExpenditureDashboard";
 import styles from "@/app/page.module.css";
 
 export interface Expenditure {
-  _id?: string;
-  projectId: string;
+  _id: string;
+  projectId: {
+    _id: string;
+  };
   categoryId: {
     _id: string;
     name: string;
-    subCategories: { _id: string; name: string }[];
   };
   subCategoryId: {
     _id: string;
@@ -50,7 +51,7 @@ export default function Expenditures() {
   } | null>(null);
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
   const [expenditureToDelete, setExpenditureToDelete] = useState<string | null>(
-    null
+    null,
   );
   const [selectedExpenditure, setSelectedExpenditure] =
     useState<Expenditure | null>(null);
@@ -65,7 +66,7 @@ export default function Expenditures() {
   async function fetchExpenditures(page = 1) {
     try {
       const res = await fetch(
-        `/api/expenditures?page=${page}&limit=${expendituresPerPage}`
+        `/api/expenditures?page=${page}&limit=${expendituresPerPage}`,
       );
       if (!res.ok) {
         throw new Error(`HTTP error! status: ${res.status}`);
@@ -152,7 +153,7 @@ export default function Expenditures() {
 
   const handleUpdateExpenditure = (
     id: string,
-    updatedExpenditure: Partial<Expenditure>
+    updatedExpenditure: Partial<Expenditure>,
   ) => {
     fetch(`/api/expenditures/${id}`, {
       method: "PUT",
@@ -289,7 +290,10 @@ export default function Expenditures() {
                   <Button
                     variant="danger"
                     size="sm"
-                    onClick={() => handleDeleteExpenditure(expenditure._id)}
+                    onClick={() =>
+                      expenditure._id &&
+                      handleDeleteExpenditure(expenditure._id)
+                    }
                   >
                     Delete
                   </Button>
@@ -349,11 +353,7 @@ export default function Expenditures() {
         handleClose={() => setShowDeleteConfirmation(false)}
         handleConfirm={confirmDelete}
       />
-      <ExpenditureDashboard
-        show={showDashboard}
-        handleClose={() => setShowDashboard(false)}
-        expenditures={expenditures}
-      />
+      <ExpenditureDashboard expenditures={expenditures} />
     </Container>
   );
 }

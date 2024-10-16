@@ -1,22 +1,18 @@
-import React, { useState } from "react";
-import { Card, Row, Col, Button } from "react-bootstrap";
-import { Expenditure } from "../app/expenditures/page";
+import React, { useState } from 'react';
+import { Card, Row, Col, Button } from 'react-bootstrap';
+import { Expenditure } from '../app/expenditures/page';
 
 interface DashboardProps {
   expenditures: Expenditure[];
-  projectId: string;
 }
 
-const ExpenditureDashboard: React.FC<DashboardProps> = ({
-  expenditures,
-  projectId,
-}) => {
+const ExpenditureDashboard: React.FC<DashboardProps> = ({ expenditures }) => {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
   const formatCurrency = (amount: number): string => {
-    return new Intl.NumberFormat("en-IN", {
-      style: "currency",
-      currency: "INR",
+    return new Intl.NumberFormat('en-IN', {
+      style: 'currency',
+      currency: 'INR',
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
     }).format(amount);
@@ -73,10 +69,10 @@ const ExpenditureDashboard: React.FC<DashboardProps> = ({
             {Object.entries(categoryTotals).map(([categoryId, total]) => (
               <Col key={categoryId}>
                 <Card
-                  bg={selectedCategory === categoryId ? "success" : "primary"}
+                  bg={selectedCategory === categoryId ? 'success' : 'primary'}
                   text="white"
                   onClick={() => handleCategoryClick(categoryId)}
-                  style={{ cursor: "pointer" }}
+                  style={{ cursor: 'pointer' }}
                 >
                   <Card.Body>
                     <Card.Title>
@@ -86,7 +82,7 @@ const ExpenditureDashboard: React.FC<DashboardProps> = ({
                         )?.categoryId.name
                       }
                     </Card.Title>
-                    <Card.Text style={{ fontSize: "1.8rem" }}>
+                    <Card.Text style={{ fontSize: '1.8rem' }}>
                       {formatCurrency(total)}
                     </Card.Text>
                   </Card.Body>
@@ -101,7 +97,7 @@ const ExpenditureDashboard: React.FC<DashboardProps> = ({
           <Col>
             <hr />
             <h1>
-              Subcategories for{" "}
+              Subcategories for{' '}
               {
                 expenditures?.find(
                   (exp) => exp.categoryId._id === selectedCategory
@@ -121,7 +117,7 @@ const ExpenditureDashboard: React.FC<DashboardProps> = ({
                             )?.subCategoryId.name
                           }
                         </Card.Title>
-                        <Card.Text style={{ fontSize: "1.8rem" }}>
+                        <Card.Text style={{ fontSize: '1.8rem' }}>
                           {formatCurrency(total)}
                         </Card.Text>
                       </Card.Body>

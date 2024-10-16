@@ -88,8 +88,8 @@ export default function ProjectList() {
         const updatedProject = await response.json();
         setProjects(
           projects.map((p) =>
-            p._id === updatedProject._id ? updatedProject : p
-          )
+            p._id === updatedProject._id ? updatedProject : p,
+          ),
         );
         setShowEditModal(false);
       } else {
@@ -185,7 +185,7 @@ export default function ProjectList() {
                   setEditingProject(
                     editingProject
                       ? { ...editingProject, name: e.target.value }
-                      : null
+                      : null,
                   )
                 }
                 placeholder="Enter Project Name"
