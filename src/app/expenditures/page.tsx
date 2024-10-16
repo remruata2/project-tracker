@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import {
   Button,
   Alert,
@@ -59,26 +59,29 @@ export default function Expenditures() {
   const [expendituresPerPage] = useState(9);
   const [totalPages, setTotalPages] = useState(0);
 
+  const fetchExpenditures = useCallback(
+    async (page = 1) => {
+      try {
+        const res = await fetch(
+          `/api/expenditures?page=${page}&limit=${expendituresPerPage}`,
+        );
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+        const data = await res.json();
+        setExpenditures(data.expenditures);
+        setTotalPages(data.totalPages);
+      } catch (error) {
+        console.error("Error fetching expenditures:", error);
+        setExpenditures([]);
+      }
+    },
+    [expendituresPerPage],
+  );
+
   useEffect(() => {
     fetchExpenditures(currentPage);
-  }, [currentPage, expendituresPerPage, fetchExpenditures]);
-
-  async function fetchExpenditures(page = 1) {
-    try {
-      const res = await fetch(
-        `/api/expenditures?page=${page}&limit=${expendituresPerPage}`,
-      );
-      if (!res.ok) {
-        throw new Error(`HTTP error! status: ${res.status}`);
-      }
-      const data = await res.json();
-      setExpenditures(data.expenditures);
-      setTotalPages(data.totalPages);
-    } catch (error) {
-      console.error("Error fetching expenditures:", error);
-      setExpenditures([]);
-    }
-  }
+  }, [currentPage, fetchExpenditures]);
 
   const handlePageChange = (pageNumber: number) => {
     setCurrentPage(pageNumber);

@@ -1,7 +1,7 @@
 /* eslint-disable prettier/prettier */
 "use client";
 
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback, useMemo } from "react";
 import styles from "@/app/page.module.css";
 import { Form, Tab, Tabs, Row, Col, Button } from "react-bootstrap";
 import BudgetPieChart from "@/components/BudgetChart";
@@ -63,8 +63,12 @@ export default function Home() {
   const MemoizedExpenditureDashboard = React.memo(ExpenditureDashboard);
   const MemoizedBudgetVsExpenditureChart = React.memo(BudgetVsExpenditureChart);
   const MemoizedBudgetTable = React.memo(BudgetTable);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const fetchProjects = async () => {
+  const fetchProjects = useCallback(async () => {
+    setIsLoading(true);
+    setError(null);
     try {
       const response = await fetch("/api/projects");
       if (response.ok) {
@@ -75,27 +79,30 @@ export default function Home() {
       }
     } catch (error) {
       console.error("Error fetching projects:", error);
+      setError("Failed to load projects. Please try again.");
+    } finally {
+      setIsLoading(false);
     }
-  };
+  }, []);
 
-  const fetchExpenditures = async (projectId: string) => {
+  const fetchExpenditures = useCallback(async (projectId: string) => {
     try {
       const response = await fetch(
         `/api/expenditures?all=true&projectId=${projectId}`,
       );
       if (response.ok) {
         const data = await response.json();
-        setExpenditures(data.expenditures); // Assuming the API returns an object with an 'expenditures' array
+        setExpenditures(data.expenditures);
       } else {
         throw new Error("Failed to fetch expenditures");
       }
     } catch (error) {
       console.error("Error fetching expenditures:", error);
-      setExpenditures([]); // Set to empty array in case of error
+      setExpenditures([]);
     }
-  };
+  }, []);
 
-  const fetchCategories = async () => {
+  const fetchCategories = useCallback(async () => {
     try {
       const response = await fetch("/api/categories");
       if (response.ok) {
@@ -107,7 +114,7 @@ export default function Home() {
     } catch (error) {
       console.error("Error fetching categories:", error);
     }
-  };
+  }, []);
 
   useEffect(() => {
     fetchProjects();
@@ -119,7 +126,7 @@ export default function Home() {
       setSelectedProject(projectId);
       fetchExpenditures(projectId);
     }
-  }, [projectId]);
+  }, [projectId, fetchExpenditures]);
 
   const handleProjectSelect = useCallback((projectId: string) => {
     setSelectedProject(projectId);
@@ -167,20 +174,18 @@ export default function Home() {
     return chartData;
   }, [selectedProject, categories, expenditures]);
 
-  useEffect(() => {
-    if (selectedProject) {
-      const chartData = prepareChartData();
-    }
-  }, [selectedProject, prepareChartData]);
+  const chartData = useMemo(() => prepareChartData(), [prepareChartData]);
 
   return (
     <div className={styles.container}>
+      {isLoading && <p>Loading...</p>}
+      {error && <p className="error">{error}</p>}
       <h1>Project Budget Tracker</h1>
       <div className="mb-4">
         <Row>
           <Col>
             <Form.Select
-              aria-label="Select Project"
+              aria-label="Select a project to view its budget and expenditures"
               value={selectedProject}
               onChange={(e) => handleProjectSelect(e.target.value)}
               className="float-start"
@@ -232,7 +237,7 @@ export default function Home() {
             <MemoizedExpenditureDashboard expenditures={expenditures} />
           </Tab>
           <Tab eventKey="budgetVsExpenditure" title="Budget vs Expenditure">
-            <MemoizedBudgetVsExpenditureChart categories={prepareChartData()} />
+            <MemoizedBudgetVsExpenditureChart categories={chartData} />
           </Tab>
         </Tabs>
       )}
