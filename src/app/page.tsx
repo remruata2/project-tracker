@@ -1,6 +1,7 @@
+/* eslint-disable prettier/prettier */
 "use client";
 
-import React, { useEffect, useState, useMemo, useCallback } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import styles from "@/app/page.module.css";
 import { Form, Tab, Tabs, Row, Col, Button } from "react-bootstrap";
 import BudgetPieChart from "@/components/BudgetChart";
@@ -125,7 +126,7 @@ export default function Home() {
     fetchExpenditures(projectId);
   }, []);
 
-  const prepareChartData = () => {
+  const prepareChartData = useCallback(() => {
     if (!selectedProject) {
       console.log("No project selected");
       return [];
@@ -164,7 +165,7 @@ export default function Home() {
     }));
 
     return chartData;
-  };
+  }, [selectedProject, categories, expenditures]);
 
   useEffect(() => {
     if (selectedProject) {
@@ -172,7 +173,7 @@ export default function Home() {
       const chartData = prepareChartData();
       console.log("Chart Data from useEffect:", chartData);
     }
-  }, [selectedProject, projects, expenditures]);
+  }, [selectedProject, prepareChartData]);
 
   return (
     <div className={styles.container}>
